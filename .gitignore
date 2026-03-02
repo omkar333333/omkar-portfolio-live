@@ -1,0 +1,13 @@
+.venv
+venv/
+venv
+ENV/
+env/
+__pycache__/
+*.pyc
+.idea/
+.env
+.vscode/
+static/.webassets-cache/
+tunnel.py
+tunnel_cf.py
