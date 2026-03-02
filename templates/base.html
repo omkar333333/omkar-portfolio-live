@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}{{ personal_info.name }} - Portfolio{% endblock %}</title>
+    <meta name="description" content="Portfolio of {{ personal_info.name }} - {{ personal_info.degree }}">
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Custom CSS -->
+    {% assets "css_all" %}
+    <link rel="stylesheet" href="{{ ASSET_URL }}">
+    {% endassets %}
+    
+    {% block extra_css %}{% endblock %}
+</head>
+<body class="dark-theme">
+    <div id="canvas-container"></div>
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+    
+    <nav class="navbar drop-glass">
+        <div class="nav-container">
+            <a href="{{ url_for('index') }}" class="logo">
+                <span class="logo-text">{{ personal_info.name.split(' ')[0] }}</span><span class="logo-dot">.</span>
+            </a>
+            <div class="nav-links">
+                <a href="{{ url_for('index') }}" class="nav-link {% if active_page == 'home' %}active{% endif %}">Home</a>
+                <a href="{{ url_for('about') }}" class="nav-link {% if active_page == 'about' %}active{% endif %}">About</a>
+                <a href="{{ url_for('projects') }}" class="nav-link {% if active_page == 'projects' %}active{% endif %}">Projects</a>
+                <a href="{{ url_for('contact') }}" class="nav-link {% if active_page == 'contact' %}active{% endif %}">Contact</a>
+            </div>
+            <div class="mobile-menu-btn">
+                <i class="fas fa-bars"></i>
+            </div>
+        </div>
+    </nav>
+    
+    <div class="mobile-menu drop-glass">
+        <a href="{{ url_for('index') }}" class="nav-link {% if active_page == 'home' %}active{% endif %}">Home</a>
+        <a href="{{ url_for('about') }}" class="nav-link {% if active_page == 'about' %}active{% endif %}">About</a>
+        <a href="{{ url_for('projects') }}" class="nav-link {% if active_page == 'projects' %}active{% endif %}">Projects</a>
+        <a href="{{ url_for('contact') }}" class="nav-link {% if active_page == 'contact' %}active{% endif %}">Contact</a>
+    </div>
+
+    <main class="main-content">
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer class="footer drop-glass-subtle">
+        <div class="footer-content">
+            <div class="social-links">
+                <a href="https://github.com/omkarmote" target="_blank" class="social-icon"><i class="fab fa-github"></i></a>
+                <a href="#" target="_blank" class="social-icon"><i class="fab fa-linkedin-in"></i></a>
+                <a href="mailto:{{ personal_info.email }}" class="social-icon"><i class="fas fa-envelope"></i></a>
+            </div>
+            <p>&copy; {{ current_year }} {{ personal_info.name }}. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <!-- Three.js & GSAP -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+
+    <!-- Socket.IO -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.2/socket.io.js"></script>
+
+    <!-- Custom JS -->
+    {% assets "js_all" %}
+    <script src="{{ ASSET_URL }}"></script>
+    {% endassets %}
+    
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

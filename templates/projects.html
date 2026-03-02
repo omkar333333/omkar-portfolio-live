@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+
+{% block title %}Projects | {{ personal_info.name }}{% endblock %}
+
+{% block content %}
+<div class="page-header text-center glass-panel gradient-glass">
+    <h1 class="page-title">My Projects</h1>
+    <p class="subtitle">Exploring AI, Data Science, and Creative Tech</p>
+</div>
+
+<div class="filter-container text-center my-4 drop-glass-subtle">
+    <div class="filter-buttons">
+        {% for cat in categories %}
+        <a href="{{ url_for('projects', category=cat) }}"
+            class="filter-btn {% if request.args.get('category', 'all') == cat %}active{% endif %}">
+            {{ cat | replace('-', ' ') | title }}
+        </a>
+        {% endfor %}
+    </div>
+</div>
+
+<div class="projects-grid all-projects">
+    {% for project in projects %}
+    <div class="project-card glass-panel hover-grow appear-anim" style="animation-delay: {{ loop.index0 * 0.1 }}s">
+        <div class="project-img-container">
+            {% if project.image %}
+            <img src="{{ project.image }}" alt="{{ project.title }}" class="project-real-img">
+            {% else %}
+            <div class="project-placeholder-img">
+                <i
+                    class="fas {% if project.category == 'data-science' %}fa-chart-pie{% elif project.category == 'creative-tech' %}fa-paint-brush{% else %}fa-laptop-code{% endif %}"></i>
+            </div>
+            {% endif %}
+        </div>
+        <div class="project-info">
+            <div class="d-flex justify-between align-center mb-2">
+                <span class="project-category text-gradient">{{ project.category | replace('-', ' ') | title }}</span>
+                <div class="project-links">
+                    <a href="{{ project.github }}" target="_blank" class="icon-link"><i class="fab fa-github"></i></a>
+                    <a href="{{ project.live }}" target="_blank" class="icon-link"><i
+                            class="fas fa-external-link-alt"></i></a>
+                </div>
+            </div>
+            <h3 class="project-title">{{ project.title }}</h3>
+            <p class="project-desc">{{ project.long_description }}</p>
+            <div class="project-tech mt-3">
+                {% for tech in project.technologies %}
+                <span class="tech-tag glass-tag drop-shadow">{{ tech }}</span>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}
