@@ -18,6 +18,7 @@ app = Flask(__name__)
 
 # Config settings (Production Ready)
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'omkar-portfolio-secret-2027')
+app.config['CACHE_TYPE'] = 'SimpleCache'
 # Prefer POSTGRES_URL/DATABASE_URL if available (for Render/Vercel standard), fallback to local sqlite
 app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL', 'sqlite:///omkar_portfolio.db')
 if app.config['SQLALCHEMY_DATABASE_URI'].startswith("postgres://"):
@@ -28,7 +29,7 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 cache = Cache(app)
 mail = Mail(app)
-socketio = SocketIO(app, cors_allowed_origins="*") # Allow connections from all origins for production
+socketio = SocketIO(app, cors_allowed_origins="*", async_mode='threading') # explicitly use threading to remove gevent warning
 compress = Compress(app)
 
 # Asset bundling
@@ -52,12 +53,13 @@ PERSONAL_INFO = {
     'degree': 'Bachelor of Engineering in Artificial Intelligence And Data Science',
     'graduation_year': '2027',
     'current_semester': 'TE (Third Year)',
-    'cgpa': '8.16',
+    'cgpa': '8.09',
     'semester_grades': [
         {'semester': 1, 'sgpa': 8.00},
         {'semester': 2, 'sgpa': 8.32},
         {'semester': 3, 'sgpa': 8.00},
-        {'semester': 4, 'sgpa': 8.32}
+        {'semester': 4, 'sgpa': 8.32},
+        {'semester': 5, 'sgpa': 7.81}
     ],
     'about': """Strong foundation in Python and C++, complemented by project planning expertise. 
                 Successfully applied color theory and artistic skills in previous roles, enhancing 
@@ -71,7 +73,10 @@ SKILLS = {
     'programming': [
         {'name': 'Python', 'proficiency': 90, 'icon': 'fab fa-python'},
         {'name': 'C++', 'proficiency': 85, 'icon': 'fas fa-code'},
-        {'name': 'DSA', 'proficiency': 80, 'icon': 'fas fa-sitemap'}
+        {'name': 'DSA', 'proficiency': 80, 'icon': 'fas fa-sitemap'},
+        {'name': 'MySQL', 'proficiency': 78, 'icon': 'fas fa-database'},
+        {'name': 'PHP', 'proficiency': 72, 'icon': 'fab fa-php'},
+        {'name': 'Ruby', 'proficiency': 65, 'icon': 'fas fa-gem'}
     ],
     'creative': [
         {'name': 'Color Theory', 'proficiency': 88, 'icon': 'fas fa-palette'},
@@ -150,13 +155,14 @@ EDUCATION = [
         'university': 'Savitribai Phule Pune University',
         'period': '2023 - 2027',
         'status': 'TE Student (Third Year)',
-        'cgpa': '8.16',
+        'cgpa': '8.09',
         'highlights': [
             'Semester 1: 8.00 CGPA',
             'Semester 2: 8.32 CGPA',
             'Semester 3: 8.00 CGPA',
             'Semester 4: 8.32 CGPA',
-            'Consistent academic performance with cumulative 8.16 CGPA'
+            'Semester 5: 7.81 CGPA',
+            'Consistent academic performance with cumulative 8.09 CGPA'
         ],
         'image': '/static/images/education_image.png'
     }
@@ -218,9 +224,9 @@ def get_education():
 def get_semester_performance():
     """Get semester-wise performance data for charts"""
     data = {
-        'semesters': [1, 2, 3, 4],
-        'sgpa': [8.00, 8.32, 8.00, 8.32],
-        'cgpa': [8.00, 8.16, 8.11, 8.16]
+        'semesters': [1, 2, 3, 4, 5],
+        'sgpa': [8.00, 8.32, 8.00, 8.32, 7.81],
+        'cgpa': [8.00, 8.16, 8.11, 8.16, 8.09]
     }
     return jsonify(data)
 
