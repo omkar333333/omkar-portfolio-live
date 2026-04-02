@@ -4,9 +4,7 @@ from flask import Flask, render_template, jsonify, request, url_for
 from flask_sqlalchemy import SQLAlchemy
 from flask_caching import Cache
 from flask_mail import Mail
-from flask_socketio import SocketIO
 from flask_compress import Compress
-from flask_assets import Environment, Bundle
 # Use python-dotenv to handle env vars easily in dev, but it won't crash in production
 try:
     from dotenv import load_dotenv
@@ -29,17 +27,7 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 cache = Cache(app)
 mail = Mail(app)
-socketio = SocketIO(app, cors_allowed_origins="*", async_mode='threading') # explicitly use threading to remove gevent warning
 compress = Compress(app)
-
-# Asset bundling
-assets = Environment(app)
-css_bundle = Bundle('css/style.css', 'css/animations.css', 
-                   output='dist/css/main.css')
-js_bundle = Bundle('js/main.js', 'js/three-animations.js', 'js/gsap-animations.js',
-                  output='dist/js/main.js')
-assets.register('css_all', css_bundle)
-assets.register('js_all', js_bundle)
 
 # Your Personal Information
 PERSONAL_INFO = {
@@ -237,5 +225,4 @@ def submit_contact():
     return jsonify({'status': 'success', 'message': 'Message received!'})
 
 if __name__ == '__main__':
-    # host='0.0.0.0' allows the app to be accessed from other devices
-    socketio.run(app, debug=False, host='0.0.0.0', port=int(os.environ.get("PORT", 5000)))
+    app.run(debug=False, host='0.0.0.0', port=int(os.environ.get("PORT", 5000)))
